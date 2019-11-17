@@ -6,10 +6,10 @@ class Graph():
             records = file.read()
             self.records = json.loads(records)
 
-    def show_graph(self):
+    def show_graph(self, date):
         import plotly.graph_objects as go
 
-        month = self.get_date()[1]
+        month, year = date[1], date[2]
         days = list(self.records[month].keys())
         weight = list(self.records[month].values())
 
@@ -19,7 +19,7 @@ class Graph():
         fig.add_trace(go.Scatter(x=days, y=weight,
                             mode='lines+markers',
                             name='lines+markers'))
-        fig.update_layout(title=f'{month} {self.get_date()[2]}',
-                        xaxis_title=f'Days',
+        fig.update_layout(title=f'{month} {year}',
+                        xaxis_title=f'Day',
                         yaxis_title='Weight (kg)')
         fig.show()

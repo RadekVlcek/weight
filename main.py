@@ -40,7 +40,7 @@ while True:
         
     elif i == 'g' or i == 'G':
         g = Graph(data_file_path)
-        g.show_graph()
+        g.show_graph(get_date())
 
     # Exit program
     elif i == 'q' or i == 'Q':
