@@ -3,16 +3,13 @@ from graph import Graph
 import os
 
 def cls():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('cls') if os.name == 'nt' else os.system('clear')
 
 def get_date():
     from datetime import date
 
     d = date.today()
-    months = ['January', 'February', 'March', 
-            'April', 'May', 'June', 'July',
-            'August', 'August', 'September',
-            'October', 'November', 'December']
+    months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'August', 'September', 'October', 'November', 'December']
 
     # Return Day, Month, Year
     return [(d.day), months[d.month], d.year]
@@ -31,7 +28,7 @@ while True:
 
     # Add record
     if i == 'a' or i == 'A':
-        cls()
+        # cls()
         try:
             record = float(input('Add weight for today: '))
             w.add_record(record, get_date())
