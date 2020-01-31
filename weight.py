@@ -3,22 +3,25 @@ import json
 class Weight():
     months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
 
-    def __init__(self, data_file_path):
-        self.data_file_path = data_file_path
+    def __init__(self, data_file):
+        self.data_file = data_file
 
         try:
-            file_exists = open(self.data_file_path)
+            file_exists = open(self.data_file)
         except FileNotFoundError:
-            print(f'Created data file: {self.data_file_path}')
-            with open(self.data_file_path, 'w') as new_data_file:
+            print(f'Created data file: {self.data_file}')
+            with open(self.data_file, 'w') as new_data_file:
                 new_data_file.write('{}')
         else:
             file_exists.close()
 
+    def cls(self):
+        import os
+        os.system('cls') if os.name == 'nt' else os.system('clear')
+
     def get_date(self):
         from datetime import date
         d = date.today()
-        
         return [(d.day), self.months[d.month-1], d.year]
 
     def read_file(self, file):
@@ -32,7 +35,7 @@ class Weight():
 
         month = date[1] if select == 0 else self.months[select-1]
         
-        records = self.read_file(self.data_file_path)
+        records = self.read_file(self.data_file)
         if records == '{}':
                 print('\n --- NO RECORDS FOUND ---\n')
                 return 0
@@ -75,13 +78,16 @@ class Weight():
                 print(f'\t  {day}\t {weight} kg \t {diff}kg')
             print('\t------------------------------------\n')
 
+        if select != 0:
+            input('Press key to return...')
+
     # Add weight record
     def add_record(self, new_weight, date):
         day, month = str(date[0]), date[1]
         records = {}
 
         # Read from data file
-        records = self.read_file(self.data_file_path)
+        records = self.read_file(self.data_file)
         records = json.loads(records)
 
         # Check if month exists
@@ -99,5 +105,5 @@ class Weight():
             records[month][day] = float(new_weight)
             
         # Write back to data file
-        with open(self.data_file_path, 'w') as file:
+        with open(self.data_file, 'w') as file:
             file.write(json.dumps(records))
