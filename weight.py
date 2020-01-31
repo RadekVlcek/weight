@@ -1,4 +1,8 @@
+import json
+
 class Weight():
+    months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
     def __init__(self, data_file_path):
         self.data_file_path = data_file_path
 
@@ -11,20 +15,27 @@ class Weight():
         else:
             file_exists.close()
 
+    def get_date(self):
+        from datetime import date
+        d = date.today()
+        
+        return [(d.day), self.months[d.month-1], d.year]
+
+    def read_file(self, file):
+        with open(file, 'r') as file:
+            return file.read()
+
     # Show records for current month
-    def show_records(self, date):
-        import json
+    def show_records(self, date, select=0):
+        records = {}
+        day = date[0]
 
-        records = ''
-        month, day = date[1], date[0]
-
-        with open(self.data_file_path, 'r') as file:
-            records = file.read()
-
-            if records == '{}':
+        month = date[1] if select == 0 else self.months[select-1]
+        
+        records = self.read_file(self.data_file_path)
+        if records == '{}':
                 print('\n --- NO RECORDS FOUND ---\n')
                 return 0
-        # File was closed at this point
 
         records = json.loads(records)
 
@@ -34,7 +45,7 @@ class Weight():
         
         if month in records:
             prev_weight = 0
-
+            
             for day, weight in records[month].items():
                 if day == 1 or day == 21 or day == 31:
                     day = f'{day}st'
@@ -64,41 +75,29 @@ class Weight():
                 print(f'\t  {day}\t {weight} kg \t {diff}kg')
             print('\t------------------------------------\n')
 
-    # Show records for all months 
-    def show_history(self):
-        pass
-
     # Add weight record
     def add_record(self, new_weight, date):
-        import json
-        import os
-
         day, month = str(date[0]), date[1]
-        records = ''
+        records = {}
 
         # Read from data file
-        with open(self.data_file_path, 'r') as file:
-            records = file.read()
-            records = json.loads(records)
+        records = self.read_file(self.data_file_path)
+        records = json.loads(records)
 
-            # Check if month exists
-            if month in records:
-                if day not in records[month]:
-                    records[month][day] = float(new_weight)
-                    print(f'Added record for today.')
-                else:
-                    records[month][day] = float(new_weight)
-                    print(f'Record already existed for today and got overwritten.')
-
-            # Create it if not
-            else:
-                records[month] = {}
+        # Check if month exists
+        if month in records:
+            if day not in records[month]:
                 records[month][day] = float(new_weight)
+                print(f'Added record for today.')
+            else:
+                records[month][day] = float(new_weight)
+                print(f'Record already existed for today and got overwritten.')
+
+        # Create it if not
+        else:
+            records[month] = {}
+            records[month][day] = float(new_weight)
             
-        
         # Write back to data file
         with open(self.data_file_path, 'w') as file:
             file.write(json.dumps(records))
-
-        # os.system('clear')
-        # self.show_records()
